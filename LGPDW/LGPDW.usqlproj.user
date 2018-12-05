@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <StartFile>Procedures\STD\std.usp_load_clients.usql</StartFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <ScriptUserData Include="Executes\Exec_std_clients.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_clients.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DW_LGP</ClusterDatabase>
+      <ClusterSchema>mstr</ClusterSchema>
+      <RecurrenceName>std.usp_load_clients_ADLVSTool</RecurrenceName>
+      <RecurrenceId>a49219bf-03ac-4b67-83b0-d36221b3d82c</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Script.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+  </ItemGroup>
+</Project>

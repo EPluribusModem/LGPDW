@@ -1,0 +1,67 @@
+SELECT c.id,
+c.data.deviceAdministrationData.decommissioned,
+c.data.connectionData.lastOnlineLPS.dateTime,
+c.data.connectionData.lastOnlineLPS.connectionContext.lccVersion,
+c.data.licenseInfoData.level,
+c.data.licenseInfoData.clientId,
+c.data.licenseInfoData.licenseKey,
+c.data.playerDetailData.playerDeatil.name,
+c._rid,
+c._self,
+c._etag,
+c._attachments,
+c._ts 
+FROM c
+
+
+SELECT c.id,
+c.data.rkmslocationid,
+c.data.rkmsclientid,
+c.data.rkmsclientname,
+c.data.onyxid,
+c.data.bac,
+c.data.dealercode,
+c.data.name,
+c.data.address1,
+c.data.city,
+c.data.state,
+c.data.zipcode,
+c.data.country,
+c.data.active,
+c.data.reportable,
+c.data.locationguid,
+c.data.locationtype,
+c.data.parentid,
+c.data.createdtimestamp,
+c.data.updatedtimestamp,
+c.data.ref.clientId,
+c.data.ref.clientName,
+c._rid,
+c._self,
+c._etag,
+c._attachments,
+c._ts
+FROM c
+
+SELECT c.id,
+c.data.name,
+c.data.description,
+c.data.active,
+c.data.beginDate,
+c.data.ref.clientId,
+c.data.ref.clientName,
+c._rid,
+c._self,
+c._etag,
+c._attachments,
+c._ts
+FROM c
+
+SELECT c.id,
+c.data.channels.live,
+c._rid,
+c._self,
+c._etag,
+c._attachments,
+c._ts
+FROM c
