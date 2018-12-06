@@ -1,0 +1,111 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_Nissan.std.usp_load_clients
+// Desc: 
+// Auth: Juli Lisser
+// Date: 12/5/2018
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-05	    lisser						Created
+//--------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS LG_DW_LGP.std.usp_load_clientprograms;
+CREATE PROCEDURE LG_DW_LGP.std.usp_load_clientprograms(@DateSliceStart_Ext String)
+AS
+BEGIN
+//    DECLARE EXTERNAL @DateSliceStart_Ext string = "2018/12/05";
+    DECLARE @DateSliceStart DateTime = System.DateTime.Parse(@DateSliceStart_Ext);
+    DECLARE @YearInt int = @DateSliceStart.Year;
+    DECLARE @MonthInt int = @DateSliceStart.Month;
+    DECLARE @DayInt int = @DateSliceStart.Day;
+    DECLARE @YearString string = @YearInt.ToString();
+    DECLARE @MonthString string = @MonthInt.ToString().PadLeft(2, '0');
+    DECLARE @DayString string = @DayInt.ToString().PadLeft(2, '0');
+
+    DECLARE @IN string = "datalake/mstr/lg-lgm-docdb/liveguide/lgp/" + @YearString + "-" + @MonthString + "-" + @DayString + "/clientprograms.txt";
+
+    CREATE TABLE IF NOT EXISTS LG_DW_LGP.std.mstr_clientprograms
+    (
+        id string,
+        data_name string,
+        data_description string,
+        data_active string,
+        data_beginDate string,
+        data_ref_clientId string,
+        data_ref_clientName string,
+        _rid string,
+        _self string,
+        _etag string,
+        _attachments string,
+        _ts string,
+
+        source_FolderFile string,
+        load_date DateTime,
+        INDEX clx_id
+        CLUSTERED(id ASC)
+    )
+DISTRIBUTED BY HASH(id);
+
+    @EXTRACT =
+        EXTRACT id string,
+                data_name string,
+                data_description string,
+                data_active string,
+                data_beginDate string,
+                data_ref_clientId string,
+                data_ref_clientName string,
+                _rid string,
+                _self string,
+                _etag string,
+                _attachments string,
+                _ts string
+        FROM @IN
+        USING Extractors.Text(skipFirstNRows : 1, silent : true);
+
+    @QUERY_EXTRACT =
+        SELECT *,
+               @YearString + "-" + @MonthString + "-" + @DayString + "_clientprograms.txt" AS source_FolderFile,
+               DateTime.Now.Date AS load_date
+        FROM @EXTRACT
+        WHERE id NOT LIKE "%TEST%";
+
+    INSERT INTO LG_DW_LGP.std.mstr_clientprograms
+    (
+        id,
+        data_name,
+        data_description,
+        data_active,
+        data_beginDate,
+        data_ref_clientId,
+        data_ref_clientName,
+        _rid,
+        _self,
+        _etag,
+        _attachments,
+        _ts,
+        source_FolderFile,
+        load_date
+    )
+    SELECT src. *
+    FROM @QUERY_EXTRACT AS src
+         LEFT JOIN
+             LG_DW_LGP.std.mstr_clientprograms AS dst
+         ON
+         src.id == dst.id
+         AND src.data_name == dst.data_name
+         AND src.data_description == dst.data_description
+         AND src.data_active == dst.data_active
+         AND src.data_beginDate == dst.data_beginDate
+         AND src.data_ref_clientId == dst.data_ref_clientId
+         AND src.data_ref_clientName == dst.data_ref_clientName
+         AND src._rid == dst._rid
+         AND src._self == dst._self
+         AND src._etag == dst._etag
+         AND src._attachments == dst._attachments
+         AND src._ts == dst._ts
+         AND src.source_FolderFile == dst.source_FolderFile
+         AND src.load_date == dst.load_date
+    WHERE dst.id IS NULL;
+	END;

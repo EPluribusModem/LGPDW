@@ -1,0 +1,175 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_Nissan.std.usp_load_locations
+// Desc: 
+// Auth: Juli Lisser
+// Date: 12/5/2018
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-05	    lisser						Created
+//--------------------------------------------------------------------------------------
+
+DROP PROCEDURE IF EXISTS LG_DW_LGP.std.usp_load_locations;
+CREATE PROCEDURE LG_DW_LGP.std.usp_load_locations(@DateSliceStart_Ext String)
+AS
+BEGIN
+//    DECLARE EXTERNAL @DateSliceStart_Ext string = "2018/12/05";
+    DECLARE @DateSliceStart DateTime = System.DateTime.Parse(@DateSliceStart_Ext);
+    DECLARE @YearInt int = @DateSliceStart.Year;
+    DECLARE @MonthInt int = @DateSliceStart.Month;
+    DECLARE @DayInt int = @DateSliceStart.Day;
+    DECLARE @YearString string = @YearInt.ToString();
+    DECLARE @MonthString string = @MonthInt.ToString().PadLeft(2, '0');
+    DECLARE @DayString string = @DayInt.ToString().PadLeft(2, '0');
+
+    DECLARE @IN string = "datalake/mstr/lg-lgm-docdb/liveguide/lgp/" + @YearString + "-" + @MonthString + "-" + @DayString + "/locations.txt";
+
+    CREATE TABLE IF NOT EXISTS LG_DW_LGP.std.mstr_locations
+    (
+        id string,
+        data_rkmslocationid string,
+        data_rkmsclientid string,
+        data_rkmsclientname string,
+        data_onyxid string,
+        data_bac string,
+        data_dealercode string,
+        data_name string,
+        data_address1 string,
+        data_city string,
+        data_state string,
+        data_zipcode string,
+        data_country string,
+        data_active string,
+        data_reportable string,
+        data_locationguid string,
+        data_locationtype string,
+        data_parentid string,
+        data_createdtimestamp string,
+        data_updatedtimestamp string,
+        data_ref_clientId string,
+        data_ref_clientName string,
+        _rid string,
+        _self string,
+        _etag string,
+        _attachments string,
+        _ts string,
+
+        source_FolderFile string,
+        load_date DateTime,
+        INDEX clx_id
+        CLUSTERED(id ASC)
+    )
+DISTRIBUTED BY HASH(id);
+
+    @EXTRACT =
+        EXTRACT id string,
+                data_rkmslocationid string,
+                data_rkmsclientid string,
+                data_rkmsclientname string,
+                data_onyxid string,
+                data_bac string,
+                data_dealercode string,
+                data_name string,
+                data_address1 string,
+                data_city string,
+                data_state string,
+                data_zipcode string,
+                data_country string,
+                data_active string,
+                data_reportable string,
+                data_locationguid string,
+                data_locationtype string,
+                data_parentid string,
+                data_createdtimestamp string,
+                data_updatedtimestamp string,
+                data_ref_clientId string,
+                data_ref_clientName string,
+                _rid string,
+                _self string,
+                _etag string,
+                _attachments string,
+                _ts string
+        FROM @IN
+        USING Extractors.Text(skipFirstNRows : 1, silent : true);
+
+    @QUERY_EXTRACT =
+        SELECT *,
+               @YearString + "-" + @MonthString + "-" + @DayString + "_locations.txt" AS source_FolderFile,
+               DateTime.Now.Date AS load_date
+        FROM @EXTRACT
+        WHERE id NOT LIKE "%TEST%";
+
+    INSERT INTO LG_DW_LGP.std.mstr_locations
+    (
+        id,
+        data_rkmslocationid,
+        data_rkmsclientid,
+        data_rkmsclientname,
+        data_onyxid,
+        data_bac,
+        data_dealercode,
+        data_name,
+        data_address1,
+        data_city,
+        data_state,
+        data_zipcode,
+        data_country,
+        data_active,
+        data_reportable,
+        data_locationguid,
+        data_locationtype,
+        data_parentid,
+        data_createdtimestamp,
+        data_updatedtimestamp,
+        data_ref_clientId,
+        data_ref_clientName,
+        _rid,
+        _self,
+        _etag,
+        _attachments,
+        _ts,
+        source_FolderFile,
+        load_date
+    )
+    SELECT src. *
+    FROM @QUERY_EXTRACT AS src
+         LEFT JOIN
+             LG_DW_LGP.std.mstr_locations AS dst
+         ON
+         src.id == dst.id
+         AND src.data_rkmslocationid == dst.data_rkmslocationid
+         AND src.data_rkmsclientid == dst.data_rkmsclientid
+         AND src.data_rkmsclientname == dst.data_rkmsclientname
+         AND src.data_onyxid == dst.data_onyxid
+         AND src.data_bac == dst.data_bac
+         AND src.data_dealercode == dst.data_dealercode
+         AND src.data_name == dst.data_name
+         AND src.data_address1 == dst.data_address1
+         AND src.data_city == dst.data_city
+         AND src.data_state == dst.data_state
+         AND src.data_zipcode == dst.data_zipcode
+         AND src.data_country == dst.data_country
+         AND src.data_active == dst.data_active
+         AND src.data_reportable == dst.data_reportable
+         AND src.data_locationguid == dst.data_locationguid
+         AND src.data_locationtype == dst.data_locationtype
+         AND src.data_parentid == dst.data_parentid
+         AND src.data_createdtimestamp == dst.data_createdtimestamp
+         AND src.data_updatedtimestamp == dst.data_updatedtimestamp
+         AND src.data_ref_clientId == dst.data_ref_clientId
+         AND src.data_ref_clientName == dst.data_ref_clientName
+         AND src._rid == dst._rid
+         AND src._self == dst._self
+         AND src._etag == dst._etag
+         AND src._attachments == dst._attachments
+         AND src._ts == dst._ts
+         AND src.source_FolderFile == dst.source_FolderFile
+         AND src.load_date == dst.load_date
+    WHERE dst.id IS NULL;
+	END;
+	
+
+		
+		

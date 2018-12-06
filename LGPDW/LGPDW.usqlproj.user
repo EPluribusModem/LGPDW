@@ -4,11 +4,47 @@
     <StartFile>Procedures\STD\std.usp_load_clients.usql</StartFile>
   </PropertyGroup>
   <ItemGroup>
+    <ScriptUserData Include="Executes\Exec_std_clientprograms.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
     <ScriptUserData Include="Executes\Exec_std_clients.usql">
       <UseLocalComputeAccount>true</UseLocalComputeAccount>
       <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
       <LocalDatabase>master</LocalDatabase>
       <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Executes\Exec_std_licenses.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Executes\Exec_std_locations.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Executes\Exec_std_players.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_clientprograms.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DW_LGP</ClusterDatabase>
+      <ClusterSchema>std</ClusterSchema>
+      <RecurrenceName>std.usp_load_clientprograms_ADLVSTool</RecurrenceName>
+      <RecurrenceId>49180555-528c-4b1f-8992-331315900cc3</RecurrenceId>
+      <Parallelism>5</Parallelism>
     </ScriptUserData>
     <ScriptUserData Include="Procedures\STD\std.usp_load_clients.usql">
       <UseLocalComputeAccount>false</UseLocalComputeAccount>
@@ -17,6 +53,51 @@
       <ClusterSchema>mstr</ClusterSchema>
       <RecurrenceName>std.usp_load_clients_ADLVSTool</RecurrenceName>
       <RecurrenceId>a49219bf-03ac-4b67-83b0-d36221b3d82c</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_licenses.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DW_LGP</ClusterDatabase>
+      <ClusterSchema>std</ClusterSchema>
+      <RecurrenceName>std.usp_load_licenses_ADLVSTool</RecurrenceName>
+      <RecurrenceId>aa5d1978-62b5-4a2a-a77e-098807de0089</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_locations.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DW_LGP</ClusterDatabase>
+      <ClusterSchema>std</ClusterSchema>
+      <RecurrenceName>std.usp_load_locations_ADLVSTool</RecurrenceName>
+      <RecurrenceId>d8603295-fd58-4a24-9f46-6e29c6658a50</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_players.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DW_LGP</ClusterDatabase>
+      <ClusterSchema>std</ClusterSchema>
+      <RecurrenceName>std.usp_load_players_ADLVSTool</RecurrenceName>
+      <RecurrenceId>3fd4ccfb-6b35-46ab-a78a-941cab69d4b9</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_subscriptions.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DW_LGP</ClusterDatabase>
+      <ClusterSchema>std</ClusterSchema>
+      <RecurrenceName>std.usp_load_subscriptions_ADLVSTool</RecurrenceName>
+      <RecurrenceId>e4d1a548-694c-402d-8191-d5a4cc9ae8de</RecurrenceId>
       <Parallelism>5</Parallelism>
     </ScriptUserData>
     <ScriptUserData Include="Script.usql">

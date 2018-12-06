@@ -1,0 +1,122 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_Nissan.std.usp_load_subscriptions
+// Desc: 
+// Auth: Juli Lisser
+// Date: 12/5/2018
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-05	    lisser						Created
+//--------------------------------------------------------------------------------------
+//
+DROP PROCEDURE IF EXISTS LG_DW_LGP.std.usp_load_subscriptions;
+CREATE PROCEDURE LG_DW_LGP.std.usp_load_subscriptions(@DateSliceStart_Ext String)
+AS
+BEGIN
+//    DECLARE EXTERNAL @DateSliceStart_Ext string = "2018/12/04";
+    DECLARE @DateSliceStart DateTime = System.DateTime.Parse(@DateSliceStart_Ext);
+    DECLARE @YearInt int = @DateSliceStart.Year;
+    DECLARE @MonthInt int = @DateSliceStart.Month;
+    DECLARE @DayInt int = @DateSliceStart.Day;
+    DECLARE @YearString string = @YearInt.ToString();
+    DECLARE @MonthString string = @MonthInt.ToString().PadLeft(2, '0');
+    DECLARE @DayString string = @DayInt.ToString().PadLeft(2, '0');
+
+    DECLARE @IN string = "datalake/mstr/lg-lgm-docdb/liveguide/lgp/" + @YearString + "-" + @MonthString + "-" + @DayString + "/subscriptions.txt";
+
+    CREATE TABLE IF NOT EXISTS LG_DW_LGP.std.mstr_subscriptions
+    (
+        id string,
+        _rid string,
+        _self string,
+        _etag string,
+        data_id string,
+        data_subscriptionLevel string,
+        data_beginDate string,
+        data_active string,
+        data_ref_clientId string,
+        data_ref_clientName string,
+        data_ref_clientProgramId string,
+        data_ref_clientProgramName string,
+        _attachments string,
+        _ts string,
+
+        source_FolderFile string,
+        load_date DateTime,
+        INDEX clx_id
+        CLUSTERED(id ASC)
+    )
+		DISTRIBUTED BY HASH(id);
+
+    @EXTRACT =
+        EXTRACT id string,
+                _rid string,
+                _self string,
+                _etag string,
+                data_id string,
+                data_subscriptionLevel string,
+                data_beginDate string,
+                data_active string,
+                data_ref_clientId string,
+                data_ref_clientName string,
+                data_ref_clientProgramId string,
+                data_ref_clientProgramName string,
+                _attachments string,
+                _ts string
+        FROM @IN
+        USING Extractors.Text(skipFirstNRows : 1, silent : true);
+
+    @QUERY_EXTRACT =
+        SELECT *,
+               @YearString + "-" + @MonthString + "-" + @DayString + "_subscriptions.txt" AS source_FolderFile,
+               DateTime.Now.Date AS load_date
+        FROM @EXTRACT
+        WHERE id NOT LIKE "%TEST%";
+
+    INSERT INTO LG_DW_LGP.std.mstr_subscriptions
+    (
+        id,
+        _rid,
+        _self,
+        _etag,
+        data_id,
+        data_subscriptionLevel,
+        data_beginDate,
+        data_active,
+        data_ref_clientId,
+        data_ref_clientName,
+        data_ref_clientProgramId,
+        data_ref_clientProgramName,
+        _attachments,
+        _ts,
+        source_FolderFile,
+        load_date
+    )
+    SELECT src. *
+    FROM @QUERY_EXTRACT AS src
+         LEFT JOIN
+             LG_DW_LGP.std.mstr_subscriptions AS dst
+         ON
+         src.id == dst.id
+         AND src._rid == dst._rid
+         AND src._self == dst._self
+         AND src._etag == dst._etag
+         AND src.data_id == dst.data_id
+         AND src.data_subscriptionLevel == dst.data_subscriptionLevel
+         AND src.data_beginDate == dst.data_beginDate
+         AND src.data_active == dst.data_active
+         AND src.data_ref_clientId == dst.data_ref_clientId
+         AND src.data_ref_clientName == dst.data_ref_clientName
+         AND src.data_ref_clientProgramId == dst.data_ref_clientProgramId
+         AND src.data_ref_clientProgramName == dst.data_ref_clientProgramName
+         AND src._attachments == dst._attachments
+         AND src._ts == dst._ts
+         AND src.source_FolderFile == dst.source_FolderFile
+         AND src.load_date == dst.load_date
+    WHERE dst.id IS NULL;
+//	END;
+	
+
+	
