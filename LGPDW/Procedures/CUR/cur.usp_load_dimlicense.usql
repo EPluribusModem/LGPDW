@@ -1,0 +1,139 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_Nissan.cur.usp_load_dimlicense
+// Desc:
+// Auth: Juli Lisser
+// Date: 2018-12-06
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-06       lisser			             Created
+//--------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS cur.usp_load_dimlicense;
+CREATE PROCEDURE cur.usp_load_dimlicense()
+AS
+BEGIN
+    DECLARE @OUT string = "/datalake/c_cur/LG_DM_LGP/dim_license.csv";
+    @QUERY_DISTINCT_LICENSES =
+        SELECT data_id.ToLower() AS data_id,
+               data_deviceId.ToLower() AS data_deviceId,
+               source_FolderFile,
+               load_date,
+               ROW_NUMBER() OVER(PARTITION BY
+               data_id.ToLower(),
+               data_deviceId.ToLower(),
+               source_FolderFile
+               ORDER BY load_date DESC) AS rn_truerecords
+        FROM LG_DW_LGP.std.mstr_licenses;
+
+    @Licenses =
+        SELECT *
+        FROM @QUERY_DISTINCT_LICENSES
+        WHERE rn_truerecords == 1;
+
+    @Licenses2 =
+        SELECT *,
+               ROW_NUMBER() OVER(PARTITION BY data_id ORDER BY load_date DESC) AS rn_changes
+        FROM @Licenses;
+
+    @LicensesMaxDate =
+        SELECT data_id,
+               MAX(load_date) AS maxloaddate
+        FROM @Licenses2
+        GROUP BY data_id;
+
+    @LicensesMinDate =
+        SELECT data_id,
+               MIN(load_date) AS minloaddate
+        FROM @Licenses2
+        GROUP BY data_id;
+
+    @Defaults =
+        SELECT *
+        FROM(
+            VALUES
+            (
+                - 1,
+                "n/a",
+                1,
+                0,
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2999-12-31"),
+                1
+            ),
+            (
+                - 2,
+                "unknown",
+                1,
+                0,
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2999-12-31"),
+                1
+            ),
+            (
+                - 3,
+                "invalid",
+                1,
+                0,
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2999-12-31"),
+                1
+            )
+			)AS T(license_Key,
+				  licenseGuid,
+				  isActive,
+				  isReportable,
+				  createdTimestamp,
+				  insertedTimestamp,
+				  expiredTimestamp,
+				  isActiveRecord);
+
+    @Licenses3 =
+        SELECT ROW_NUMBER() OVER() AS license_Key,
+               l2.data_id AS licenseGuid,
+               (l2.data_deviceId LIKE "%player_%") ? 1 : 0 AS isActive,
+               (l2.data_deviceId LIKE "%player_%") ? 1 : 0 AS isReportable,
+               lmd.minloaddate AS createdTimestamp,
+               l2.load_date AS insertedTimestamp,
+               (l2.rn_changes == 1) ? DateTime.Parse("2999-12-31") : l2.load_date AS expiredTimestamp,
+               (lxd.maxloaddate == l2.load_date) ? 1 : 0 AS isActiveRecord
+        FROM @Licenses2 AS l2
+             INNER JOIN
+                 @LicensesMinDate AS lmd
+             ON l2.data_id == lmd.data_id
+             INNER JOIN
+                 @LicensesMaxDate AS lxd
+             ON l2.data_id == lxd.data_id
+        UNION ALL
+        SELECT (long?) license_Key AS license_Key,
+               licenseGuid,
+               isActive,
+               isReportable,
+               (DateTime?) createdTimestamp AS createdTimestamp,
+               insertedTimestamp,
+               expiredTimestamp,
+               isActiveRecord
+        FROM @Defaults;
+
+    DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_license;
+    CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.dim_license
+    (
+        INDEX clx_licenseGuid
+        CLUSTERED(licenseGuid ASC)
+        DISTRIBUTED BY
+        HASH(licenseGuid)
+    )AS
+    SELECT *
+    FROM @Licenses3;
+
+    OUTPUT @Licenses3
+    TO @OUT
+    USING Outputters.Csv(outputHeader : true, quoting : true);
+	
+END;
+			   
+

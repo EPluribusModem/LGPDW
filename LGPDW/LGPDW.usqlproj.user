@@ -1,9 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <StartFile>Procedures\STD\std.usp_load_clients.usql</StartFile>
+    <StartFile>Executes\Exec_cur_licenses.usql</StartFile>
   </PropertyGroup>
   <ItemGroup>
+    <ScriptUserData Include="Executes\Exec_cur_clients.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Executes\Exec_cur_licenses.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Executes\Exec_cur_locations.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
     <ScriptUserData Include="Executes\Exec_std_clientprograms.usql">
       <UseLocalComputeAccount>true</UseLocalComputeAccount>
       <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
@@ -33,6 +51,51 @@
       <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
       <LocalDatabase>master</LocalDatabase>
       <LocalSchema>dbo</LocalSchema>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\CUR\cur.load_dimlocation.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DM_LGP</ClusterDatabase>
+      <ClusterSchema>cur</ClusterSchema>
+      <RecurrenceName>cur.load_dimlocation_ADLVSTool</RecurrenceName>
+      <RecurrenceId>ceb14cd1-c1e4-45f6-b5e2-a9456d53fa84</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\CUR\cur.usp_load_dimclient.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DM_LGP</ClusterDatabase>
+      <ClusterSchema>cur</ClusterSchema>
+      <RecurrenceName>cur.usp_load_dimclient_ADLVSTool</RecurrenceName>
+      <RecurrenceId>b70842c4-ec4e-4185-9119-b5e438bc59f7</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\CUR\cur.usp_load_dimclientprogram.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DM_LGP</ClusterDatabase>
+      <ClusterSchema>cur</ClusterSchema>
+      <RecurrenceName>cur.usp_load_dimclientprogram_ADLVSTool</RecurrenceName>
+      <RecurrenceId>e92076be-d1c2-4481-a99d-7cf3f9f22b4c</RecurrenceId>
+      <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\CUR\cur.usp_load_dimlicense.usql">
+      <UseLocalComputeAccount>false</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
+      <ClusterComputeAccount>DataLakeCA:lgadlatest (lisser@dcimlg.com)</ClusterComputeAccount>
+      <ClusterDatabase>LG_DM_LGP</ClusterDatabase>
+      <ClusterSchema>cur</ClusterSchema>
+      <RecurrenceName>cur.usp_load_dimlicense_ADLVSTool</RecurrenceName>
+      <RecurrenceId>d1fba51c-81bd-43e7-898f-5251cd304dd7</RecurrenceId>
+      <Parallelism>5</Parallelism>
     </ScriptUserData>
     <ScriptUserData Include="Procedures\STD\std.usp_load_clientprograms.usql">
       <UseLocalComputeAccount>false</UseLocalComputeAccount>
@@ -87,6 +150,12 @@
       <RecurrenceName>std.usp_load_players_ADLVSTool</RecurrenceName>
       <RecurrenceId>3fd4ccfb-6b35-46ab-a78a-941cab69d4b9</RecurrenceId>
       <Parallelism>5</Parallelism>
+    </ScriptUserData>
+    <ScriptUserData Include="Procedures\STD\std.usp_load_programversions.usql">
+      <UseLocalComputeAccount>true</UseLocalComputeAccount>
+      <LocalComputeAccount>DataLakeLocalCA:localcomputeaccount</LocalComputeAccount>
+      <LocalDatabase>master</LocalDatabase>
+      <LocalSchema>dbo</LocalSchema>
     </ScriptUserData>
     <ScriptUserData Include="Procedures\STD\std.usp_load_subscriptions.usql">
       <UseLocalComputeAccount>false</UseLocalComputeAccount>

@@ -1,0 +1,126 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_Nissan.cur.usp_load_dimclient
+// Desc:
+// Auth: Juli Lisser
+// Date: 2018-12-06
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-06       lisser			             Created
+//--------------------------------------------------------------------------------------
+DROP PROCEDURE IF EXISTS cur.usp_load_dimclient;
+CREATE PROCEDURE cur.usp_load_dimclient()
+AS 
+BEGIN
+	DECLARE @OUT string = "/datalake/c_cur/LG_DM_LGP/dim_client.csv";
+	@QUERY_DISTINCT_CLIENTS = 
+		SELECT data_id.ToLower() AS data_id, 
+			   data_name.ToLower() AS data_name,
+			   data_longName.ToLower() AS data_longName,
+			   data_active, 
+			   data_reportable, 
+			   source_FolderFile,
+			   load_date, 
+			   ROW_NUMBER() OVER(PARTITION BY
+									data_id.ToLower(),
+									data_name.ToLower(),
+									data_longName.ToLower(),
+									data_active,
+									data_reportable,
+									source_FolderFile
+									ORDER BY load_date DESC) AS rn_truerecords 
+		FROM LG_DW_LGP.std.mstr_clients;
+	
+	@Clients = 
+		SELECT *
+		FROM @QUERY_DISTINCT_CLIENTS
+		WHERE rn_truerecords ==1;
+	
+	@Clients2 =
+		SELECT *,
+			   ROW_NUMBER() OVER(PARTITION BY data_id ORDER BY load_date DESC) AS rn_changes
+		FROM @Clients;
+	
+	@ClientMaxDate = 
+		SELECT data_id,
+			   MAX(load_date) AS maxloaddate
+		FROM @Clients2
+		GROUP BY data_id;
+	
+	@ClientMinDate = 
+		SELECT data_id,
+			   MIN(load_date) AS minloaddate
+		FROM @Clients2
+		GROUP BY data_id;
+	
+	@Defaults = 
+		SELECT *
+		FROM
+			(VALUES
+			(-1,"n/a","n/a","n/a", 1, 0, DateTime.Parse("2000-01-01"), DateTime.Parse("2000-01-01"), DateTime.Parse("2999-12-31"), 1),
+			(-2,"unknown","unknown","unknown", 1, 0, DateTime.Parse("2000-01-01"), DateTime.Parse("2000-01-01"), DateTime.Parse("2999-12-31"), 1),
+			 (-3,"invalid","invalid","invalid", 1, 0, DateTime.Parse("2000-01-01"), DateTime.Parse("2000-01-01"), DateTime.Parse("2999-12-31"), 1)
+			) AS T(client_Key,
+				   clientGuid,
+				   name,
+				   longName,
+				   isActive,
+				   isReportable,
+				   createdTimestamp,
+				   insertedTimestamp,
+				   expiredTimestamp,
+				   isActiveRecord);
+	
+	@Clients3 = 
+		SELECT ROW_NUMBER() OVER() AS client_Key,
+			   c2.data_id AS clientGuid,
+			   c2.data_name AS name,
+			   c2.data_longName AS longName,
+			   (c2.data_active == "True") ? 1 : 0 AS isActive,
+			   (c2.data_reportable == "False") ? 1 : 0 AS isReportable,
+			   cmd.minloaddate AS createdTimestamp,
+			   c2.load_date AS insertedTimestamp,
+			   (c2.rn_changes == 1) ? DateTime.Parse("2999-12-31") : c2.load_date AS expiredTimestamp,
+			   (cxd.maxloaddate == c2.load_date) ? 1 : 0 AS isActiveRecord
+		FROM @Clients2 AS c2
+			 INNER JOIN @ClientMinDate AS cmd
+			 ON c2.data_id == cmd.data_id
+			 INNER JOIN @ClientMaxDate AS cxd
+			 ON c2.data_id == cxd.data_id
+		UNION ALL
+		SELECT 
+			(long?)client_Key AS client_Key,
+			clientGuid,
+			name,
+			longName,
+			isActive,
+			isReportable,
+			(DateTime?)createdTimestamp AS createdTimestamp,
+			insertedTimestamp,
+			expiredTimestamp,
+			isActiveRecord
+		FROM @Defaults;
+	
+	DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_client;
+	CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.dim_client
+	(
+		INDEX clx_clientGuid
+		CLUSTERED(clientGuid ASC)
+		DISTRIBUTED BY
+		HASH(clientGuid)
+	)AS
+	SELECT *
+	FROM @Clients3;
+	
+	OUTPUT @Clients3
+	TO @OUT
+	USING Outputters.Csv(outputHeader : true, quoting : true);
+END;
+	
+			   
+				   
+	
+			   
+			   

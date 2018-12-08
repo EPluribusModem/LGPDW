@@ -20,11 +20,49 @@
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Script Include="Executes\Exec_cur_locations.usql" />
+    <Script Include="Executes\Exec_cur_licenses.usql" />
+    <Script Include="Executes\Exec_cur_clientprograms.usql" />
+    <Script Include="Executes\Exec_cur_clients.usql" />
     <Script Include="Executes\Exec_std_clients.usql" />
+    <Script Include="Procedures\CUR\cur.load_dimlocation.usql" />
+    <Script Include="Procedures\CUR\cur.usp_load_dimclient.usql" />
+    <Script Include="Procedures\CUR\cur.usp_load_dimclientprogram.usql" />
+    <Script Include="Procedures\CUR\cur.usp_load_dimlicense.usql" />
+    <Script Include="Procedures\STD\std.usp_load_clientprograms.usql" />
     <Script Include="Procedures\STD\std.usp_load_clients.usql" />
+    <Script Include="Procedures\STD\std.usp_load_licenses.usql" />
+    <Script Include="Procedures\STD\std.usp_load_locations.usql" />
+    <Script Include="Procedures\STD\std.usp_load_players.usql" />
+    <Script Include="Procedures\STD\std.usp_load_programversions.usql" />
+    <Script Include="Procedures\STD\std.usp_load_subscriptions.usql" />
     <Script Include="Script.usql" />
+    <ScriptCode Include="Executes\Exec_cur_locations.usql.cs">
+      <DependentUpon>Executes\Exec_cur_locations.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Executes\Exec_cur_licenses.usql.cs">
+      <DependentUpon>Executes\Exec_cur_licenses.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Executes\Exec_cur_clientprograms.usql.cs">
+      <DependentUpon>Executes\Exec_cur_clientprograms.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Executes\Exec_cur_clients.usql.cs">
+      <DependentUpon>Executes\Exec_cur_clients.usql</DependentUpon>
+    </ScriptCode>
     <ScriptCode Include="Executes\Exec_std_clients.usql.cs">
       <DependentUpon>Executes\Exec_std_clients.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Procedures\CUR\cur.load_dimlocation.usql.cs">
+      <DependentUpon>Procedures\CUR\cur.load_dimlocation.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Procedures\CUR\cur.usp_load_dimclient.usql.cs">
+      <DependentUpon>Procedures\CUR\cur.usp_load_dimclient.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Procedures\CUR\cur.usp_load_dimclientprogram.usql.cs">
+      <DependentUpon>Procedures\CUR\cur.usp_load_dimclientprogram.usql</DependentUpon>
+    </ScriptCode>
+    <ScriptCode Include="Procedures\CUR\cur.usp_load_dimlicense.usql.cs">
+      <DependentUpon>Procedures\CUR\cur.usp_load_dimlicense.usql</DependentUpon>
     </ScriptCode>
     <ScriptCode Include="Procedures\STD\std.usp_load_clients.usql.cs">
       <DependentUpon>Procedures\STD\std.usp_load_clients.usql</DependentUpon>
