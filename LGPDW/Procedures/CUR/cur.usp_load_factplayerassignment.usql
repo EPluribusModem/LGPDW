@@ -1,0 +1,133 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_LGP.cur.factplayerassignment
+// Desc: Factless Fact Table
+// Auth: Juliana Lisser
+// Date: 10/04/2018
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-12       Lisser                       Created
+//--------------------------------------------------------------------------------------
+ DROP PROCEDURE IF EXISTS LG_DM_LGP.cur.factplayerassignment;
+ CREATE PROCEDURE LG_DM_LGP.cur.factplayerassignment() AS
+ BEGIN
+     DECLARE @OUT string = "/datalake/c_cur/LG_DM_LGP/factplayerassignment.csv";
+	 
+	 @QUERY_MSTR_PLAYERS = 
+		 SELECT DISTINCT id.ToLower() AS playerGuid,
+				data_licenseInfoData_licenseKey.ToLower() AS licenseKey
+		 FROM LG_DW_LGP.std.mstr_players;
+	 
+	 @QUERY_MSTR_LICENSES =
+		 SELECT DISTINCT id.ToLower() AS licenseGuid,
+				data_ref_clientId.ToLower() AS clientGuid, 
+				data_ref_clientProgramId.ToLower() AS clientProgramGuid,
+				data_ref_subscriptionId.ToLower() AS subscriptionGuid, 
+				data_ref_locationId.ToLower() AS locationGuid,
+				data_deviceId.ToLower() AS playerGuid
+		FROM LG_DW_LGP.std.mstr_licenses;
+	 
+	 @QUERY_DIMPLAYER = 
+	 SELECT player_Key,
+			playerGuid
+		 FROM LG_DM_LGP.cur.dim_player
+		 WHERE isActiveRecord == 1;
+	 
+	 @QUERY_DIMCLIENT = 
+	 SELECT client_Key,
+			clientGuid
+		FROM LG_DM_LGP.cur.dim_client
+		WHERE isActiveRecord == 1;
+
+	 @QUERY_DIMCLIENTPROGRAM =
+	     SELECT clientProgram_Key,
+	            clientProgramGuid
+	     FROM LG_DM_LGP.cur.dim_clientprograms
+	     WHERE isActiveRecord == 1;
+
+@QUERY_DIMLICENSE =
+    SELECT license_Key,
+           licenseGuid
+    FROM LG_DM_LGP.cur.dim_license
+    WHERE isActiveRecord == 1;
+
+@QUERY_DIMLOCATION = 
+	SELECT location_Key,
+		   locationGuid
+	FROM LG_DM_LGP.cur.dim_location
+	WHERE isActiveRecord == 1;
+
+@QUERY_DIMSUBSCRIPTION =
+    SELECT subscription_Key,
+           subscriptionGuid
+    FROM LG_DM_LGP.cur.dim_subscription
+    WHERE isActiveRecord == 1;
+
+@QUERY_EXISTING =
+    SELECT *
+    FROM LG_DM_LGP.cur.fact_playerassignment;
+
+@QUERY_FACT_PLAYERASSIGNMENT =
+    SELECT ROW_NUMBER() OVER() AS playerAssignment_Key,
+           player.player_Key IS NULL? - 1 : player.player_Key AS player_Key,
+           location.location_Key IS NULL? - 1 : location.location_Key AS location_Key,
+           license.license_Key IS NULL? - 1 : license.license_Key AS license_Key,
+           client.client_Key IS NULL? - 1 : client.client_Key AS client_Key,
+           clientProgram.clientProgram_Key IS NULL? - 1 : clientProgram.clientProgram_Key AS clientProgram_Key,
+           subscription.subscription_Key IS NULL? - 1 : subscription.subscription_Key AS subscription_Key,
+           1 AS counterToken,
+           DateTime.Now.Date AS load_date
+
+    FROM @QUERY_MSTR_PLAYERS AS p
+         JOIN
+             @QUERY_MSTR_LICENSES AS l
+         ON p.licenseKey == l.licenseGuid
+         JOIN
+             @QUERY_DIMPLAYER AS player
+         ON l.playerGuid == player.playerGuid
+         JOIN
+             @QUERY_DIMCLIENT AS client
+         ON l.clientGuid == client.clientGuid
+         JOIN
+             @QUERY_DIMCLIENTPROGRAM AS clientProgram
+         ON l.clientProgramGuid == clientProgram.clientProgramGuid
+         JOIN
+             @QUERY_DIMLICENSE AS license
+         ON l.licenseGuid == license.licenseGuid
+         JOIN
+             @QUERY_DIMLOCATION AS location
+         ON l.locationGuid == location.locationGuid
+         JOIN
+             @QUERY_DIMSUBSCRIPTION AS subscription
+         ON l.subscriptionGuid == subscription.subscriptionGuid
+
+    UNION ALL
+    SELECT *
+    FROM @QUERY_EXISTING;
+
+
+CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.fact_playerassignment
+(
+    INDEX clx_playerAssignment_Key
+    CLUSTERED(playerAssignment_Key ASC)
+    DISTRIBUTED BY
+    HASH(playerAssignment_Key)
+)
+AS
+SELECT *
+FROM @QUERY_FACT_PLAYERASSIGNMENT;
+
+OUTPUT @QUERY_FACT_PLAYERASSIGNMENT
+TO @OUT
+USING Outputters.Csv(outputHeader : true, quoting : true);
+END;
+					 
+
+
+	 
+
+	 
+	 
+	 

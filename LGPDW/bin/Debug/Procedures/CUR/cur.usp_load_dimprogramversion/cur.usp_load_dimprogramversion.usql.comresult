@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+<CommonCompileResult xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <InputStreams />
+  <ScriptPath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion\cur.usp_load_dimprogramversion.usql</ScriptPath>
+  <ScopeVertexDefinitionPath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion\ScopeVertexDef.xml</ScopeVertexDefinitionPath>
+  <AlgebraPath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion\__script__.abr</AlgebraPath>
+  <ErrorList>
+    <Error>
+      <Line>31</Line>
+      <Column>33</Column>
+      <Start>1192</Start>
+      <End>1193</End>
+      <Message>E_CSC_USER_INVALIDEXPRESSIONSYNTAX: Invalid expression: '
+               ROW_NUMBER() OVER(PARTITION BY
+               id.ToLower(),
+               data_channels_live,
+               source_FolderFile,
+               ORDER BY load_date DESC)'. Argument missing
+Description:
+The expression does not conform to the expression syntax.
+Resolution:
+Make sure the expression uses correct expression syntax.</Message>
+      <InternalDebugInfo>E_CSC_USER_INVALIDEXPRESSIONSYNTAX: Invalid expression: '
+               ROW_NUMBER() OVER(PARTITION BY
+               id.ToLower(),
+               data_channels_live,
+               source_FolderFile,
+               ORDER BY load_date DESC)'. Argument missing
+Description:
+The expression does not conform to the expression syntax.
+Resolution:
+Make sure the expression uses correct expression syntax.... at token ',', line 31
+near the ###:
+**************
+   load_date,
+               ROW_NUMBER() OVER(PARTITION BY
+               id.ToLower(),
+               data_channels_live,
+               source_FolderFile ### ,
+               ORDER BY load_date DESC) AS rn_truerecords
+        FROM LG_DW_LGP.std.mstr_programversions;
+
+    @Programversions =
+        SELECT *
+    
+**************
+   at ScopeCompiler.FrontEnd.ExpressionHelper.ConvertRoslynParserErrors(Script script, Compiler compiler, IKeywordTable keywords, Expression expr, IRoslynTree syntaxTree, DiagnosticCollection diagnostics)
+   at ScopeCompiler.FrontEnd.ExpressionHelper.Verify(Script script, VariableBinding variableBinding, Compiler compiler, IKeywordTable keywords, Expression e, DiagnosticCollection diagnostics)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnExpression(Script currentScript, Expression e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnSelectQuery(Script input, SelectQuery e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnQueryStatement(Script input, QueryStatement e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnBatch(Script input, Batch e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.Resolve()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Compiler compiler, FunctionCall parentCall, NameContext nameContext, SubroutineType subroutineType, Script parent, DiagnosticCollection diagnostics, Script[] legacyScripts)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Script[] scripts)
+   at ScopeCompiler.FrontEnd.SqlCompileStrategy.&lt;&gt;c__DisplayClass7_0.&lt;AstBuildingPass&gt;b__1()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.FrontEndRunner.Execute()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoExecutePipeline()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.CreateContextAndCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.Execute()
+   at Microsoft.Analytics.LocalRun.LocalParseSandboxer.PrivateParse(String script, Settings settings)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+   at System.Runtime.Remoting.Messaging.ServerObjectTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Messaging.ServerContextTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessageCallback(Object[] args)
+   at System.Threading.Thread.InternalCrossContextCallback(Context ctx, IntPtr ctxID, Int32 appDomainID, InternalCrossContextDelegate ftnToCall, Object[] args)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.ChannelServices.SyncDispatchMessage(IMessage msg)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoDispatch(Byte[] reqStmBuff, SmuggledMethodCallMessage smuggledMcm, SmuggledMethodReturnMessage&amp; smuggledMrm)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoTransitionDispatchCallback(Object[] args)
+</InternalDebugInfo>
+    </Error>
+    <Error>
+      <Line>33</Line>
+      <Column>14</Column>
+      <Start>1267</Start>
+      <End>1276</End>
+      <Message>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DW_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.</Message>
+      <InternalDebugInfo>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DW_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.... at token 'LG_DW_LGP', line 33
+near the ###:
+**************
+  id.ToLower(),
+               data_channels_live,
+               source_FolderFile,
+               ORDER BY load_date DESC) AS rn_truerecords
+        FROM  ### LG_DW_LGP.std.mstr_programversions;
+
+    @Programversions =
+        SELECT *
+        FROM @QUERY_DISTINCT_PROGRAMVERSIONS
+        WHERE rn_truerecords == 1
+**************
+   at ScopeCompiler.CompilerDiagnostic.CreateInternal(DiagnosticCode code, Token anchor, Boolean pastTokenEnd, Script script, Object[] args)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckExiststence[T](Script script, DdlName name, Token token, Boolean ifExists)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckAncestorsExist(Script script, DdlName name, Token token)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnTableReference(Script input, TableReference e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnSelectQuery(Script input, SelectQuery e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnQueryStatement(Script input, QueryStatement e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnBatch(Script input, Batch e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.Resolve()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Compiler compiler, FunctionCall parentCall, NameContext nameContext, SubroutineType subroutineType, Script parent, DiagnosticCollection diagnostics, Script[] legacyScripts)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Script[] scripts)
+   at ScopeCompiler.FrontEnd.SqlCompileStrategy.&lt;&gt;c__DisplayClass7_0.&lt;AstBuildingPass&gt;b__1()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.FrontEndRunner.Execute()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoExecutePipeline()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.CreateContextAndCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.Execute()
+   at Microsoft.Analytics.LocalRun.LocalParseSandboxer.PrivateParse(String script, Settings settings)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+   at System.Runtime.Remoting.Messaging.ServerObjectTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Messaging.ServerContextTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessageCallback(Object[] args)
+   at System.Threading.Thread.InternalCrossContextCallback(Context ctx, IntPtr ctxID, Int32 appDomainID, InternalCrossContextDelegate ftnToCall, Object[] args)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.ChannelServices.SyncDispatchMessage(IMessage msg)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoDispatch(Byte[] reqStmBuff, SmuggledMethodCallMessage smuggledMcm, SmuggledMethodReturnMessage&amp; smuggledMrm)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoTransitionDispatchCallback(Object[] args)
+</InternalDebugInfo>
+    </Error>
+    <Error>
+      <Line>133</Line>
+      <Column>5</Column>
+      <Start>4276</Start>
+      <End>4280</End>
+      <Message>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DM_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.</Message>
+      <InternalDebugInfo>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DM_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.... at token 'DROP', line 133
+near the ###:
+**************
+ateTime?) createdTimestamp,
+               insertedTimestamp,
+               expiredTimestamp,
+               isActiveRecord
+        FROM @Defaults;
+
+     ### DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_programversion;
+    CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.dim_programversion
+    (
+        INDEX clx_name
+        
+**************
+   at ScopeCompiler.CompilerDiagnostic.CreateInternal(DiagnosticCode code, Token anchor, Boolean pastTokenEnd, Script script, Object[] args)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckExiststence[T](Script script, DdlName name, Token token, Boolean ifExists)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckAncestorsExist(Script script, DdlName name, Token token)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnDropTableStatement(Script input, DropTableStatement e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnBatch(Script input, Batch e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.Resolve()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Compiler compiler, FunctionCall parentCall, NameContext nameContext, SubroutineType subroutineType, Script parent, DiagnosticCollection diagnostics, Script[] legacyScripts)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Script[] scripts)
+   at ScopeCompiler.FrontEnd.SqlCompileStrategy.&lt;&gt;c__DisplayClass7_0.&lt;AstBuildingPass&gt;b__1()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.FrontEndRunner.Execute()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoExecutePipeline()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.CreateContextAndCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.Execute()
+   at Microsoft.Analytics.LocalRun.LocalParseSandboxer.PrivateParse(String script, Settings settings)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+   at System.Runtime.Remoting.Messaging.ServerObjectTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Messaging.ServerContextTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessageCallback(Object[] args)
+   at System.Threading.Thread.InternalCrossContextCallback(Context ctx, IntPtr ctxID, Int32 appDomainID, InternalCrossContextDelegate ftnToCall, Object[] args)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.ChannelServices.SyncDispatchMessage(IMessage msg)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoDispatch(Byte[] reqStmBuff, SmuggledMethodCallMessage smuggledMcm, SmuggledMethodReturnMessage&amp; smuggledMrm)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoTransitionDispatchCallback(Object[] args)
+</InternalDebugInfo>
+    </Error>
+    <Error>
+      <Line>134</Line>
+      <Column>32</Column>
+      <Start>4363</Start>
+      <End>4372</End>
+      <Message>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DM_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.</Message>
+      <InternalDebugInfo>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DM_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.... at token 'LG_DM_LGP', line 134
+near the ###:
+**************
+imestamp,
+               isActiveRecord
+        FROM @Defaults;
+
+    DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_programversion;
+    CREATE TABLE IF NOT EXISTS  ### LG_DM_LGP.cur.dim_programversion
+    (
+        INDEX clx_name
+        CLUSTERED(name ASC)
+        DISTRIBUTED BY
+        HASH(name)
+    )
+	AS
+    SELECT
+**************
+   at ScopeCompiler.CompilerDiagnostic.CreateInternal(DiagnosticCode code, Token anchor, Boolean pastTokenEnd, Script script, Object[] args)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckExiststence[T](Script script, DdlName name, Token token, Boolean ifExists)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckAncestorsExist(Script script, DdlName name, Token token)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.CheckExistenceForCreate[T](Script script, DdlName name, Token token, Boolean ifNotExists)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnCreateTableStatement(Script input, CreateTableStatement e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.TreeVisitor`2.Visit(P input, IEnumerable`1 nodes)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.OnBatch(Script input, Batch e)
+   at ScopeCompiler.VisitorContext`1.Visit(T node, Action accept)
+   at ScopeCompiler.FrontEnd.Ddl.SqlDdlResolver.Resolve()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Compiler compiler, FunctionCall parentCall, NameContext nameContext, SubroutineType subroutineType, Script parent, DiagnosticCollection diagnostics, Script[] legacyScripts)
+   at ScopeCompiler.FrontEnd.SqlAstBuilder.BuildAst(Script[] scripts)
+   at ScopeCompiler.FrontEnd.SqlCompileStrategy.&lt;&gt;c__DisplayClass7_0.&lt;AstBuildingPass&gt;b__1()
+   at ScopeCompiler.FrontEnd.CompilePassHelper.Run(Action pass, Compiler compiler, CompilerTimer timer, Boolean throwOnErrors)
+   at ScopeCompiler.FrontEnd.FrontEndRunner.Execute()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoExecutePipeline()
+   at ScopeCompiler.FrontEnd.CompilePipeline.DoCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.CreateContextAndCompile()
+   at ScopeCompiler.FrontEnd.CompilePipeline.Execute()
+   at Microsoft.Analytics.LocalRun.LocalParseSandboxer.PrivateParse(String script, Settings settings)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink._PrivateProcessMessage(IntPtr md, Object[] args, Object server, Object[]&amp; outArgs)
+   at System.Runtime.Remoting.Messaging.StackBuilderSink.SyncProcessMessage(IMessage msg)
+   at System.Runtime.Remoting.Messaging.ServerObjectTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Messaging.ServerContextTerminatorSink.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessageCallback(Object[] args)
+   at System.Threading.Thread.InternalCrossContextCallback(Context ctx, IntPtr ctxID, Int32 appDomainID, InternalCrossContextDelegate ftnToCall, Object[] args)
+   at System.Runtime.Remoting.Channels.CrossContextChannel.SyncProcessMessage(IMessage reqMsg)
+   at System.Runtime.Remoting.Channels.ChannelServices.SyncDispatchMessage(IMessage msg)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoDispatch(Byte[] reqStmBuff, SmuggledMethodCallMessage smuggledMcm, SmuggledMethodReturnMessage&amp; smuggledMrm)
+   at System.Runtime.Remoting.Channels.CrossAppDomainSink.DoTransitionDispatchCallback(Object[] args)
+</InternalDebugInfo>
+    </Error>
+  </ErrorList>
+  <WarningList />
+  <HelperCodePath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion\__ScopeCodeGenEngine__.dll.cpp</HelperCodePath>
+  <ResourceList />
+  <ReferenceList />
+  <ClusterResourceList />
+  <LocalRunSteps />
+  <LocalRunCachePath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion</LocalRunCachePath>
+  <LocalRunTempPath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion\_TMP</LocalRunTempPath>
+  <LocalRunRuntimePath>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion</LocalRunRuntimePath>
+  <ScopeWorkingDir>C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion</ScopeWorkingDir>
+</CommonCompileResult>

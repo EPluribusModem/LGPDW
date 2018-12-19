@@ -1,0 +1,59 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_LGP.cur.factplayercheckin
+// Desc: Factless Fact Table
+// Auth: Juliana Lisser
+// Date: 12/19/2018
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-19       Lisser                       Created
+//--------------------------------------------------------------------------------------
+//
+DROP PROCEDURE IF EXISTS LG_DM_LGP.cur.factplayercheckin;
+CREATE PROCEDURE LG_DM_LGP.cur.factplayercheckin()
+AS
+BEGIN
+    DECLARE @OUT string = "/datalake/c_cur/LG_DM_LGP/factplayercheckin.csv";
+
+    @QUERY_MSTR_PLAYERS =
+        SELECT id.ToLower() AS playerGuid,
+               data_connectionData_lastOnlineLPS_dateTime AS lastOnline,
+               load_date
+        FROM LG_DW_LGP.std.mstr_players;
+
+    @QUERY_DIM_PLAYER =
+        SELECT *
+        FROM LG_DM_LGP.cur.dim_player;
+
+    @QUERY_FACT_PLAYERCHECKIN =
+        SELECT dp.player_Key AS player_Key,
+               mp.lastOnline AS lastOnlineTimestamp,
+               mp.load_date AS load_date
+        FROM @QUERY_MSTR_PLAYERS AS mp
+             INNER JOIN
+                 @QUERY_DIM_PLAYER AS dp
+             ON mp.playerGuid == dp.playerGuid
+        WHERE mp.load_date >= dp.insertedTimestamp
+              AND mp.load_date <= dp.insertedTimestamp;
+
+    @QUERY_WINDOWED =
+        SELECT ROW_NUMBER() OVER() AS playerCheckIn_Key,
+               *
+        FROM @QUERY_FACT_PLAYERCHECKIN;
+    DROP TABLE IF EXISTS LG_DM_LGP.cur.fact_playercheckin;
+    CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.fact_playercheckin
+    (
+        INDEX clx_playerCheckIn_Key
+        CLUSTERED(playerCheckIn_Key ASC)
+        DISTRIBUTED BY
+        HASH(playerCheckIn_Key)
+    )
+	AS
+    SELECT *
+    FROM @QUERY_WINDOWED;
+    OUTPUT @QUERY_WINDOWED
+    TO @OUT
+    USING Outputters.Csv(outputHeader : true, quoting : true);
+	END;

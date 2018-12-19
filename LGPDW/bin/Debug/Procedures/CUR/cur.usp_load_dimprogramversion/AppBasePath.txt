@@ -1,0 +1,1 @@
+c:\program files (x86)\microsoft visual studio\2017\professional\common7\ide\extensions\microsoft\adl tools\2.3.3000.2\U-SQLSDK\

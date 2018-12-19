@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CSSRelatedInfo>
+  <ScopeCounters>
+    <Counter Name="Overall" Value="2.5351338" Unit="second" Intervals="0" />
+    <Counter Name="ResourcesDownloading" Value="0" Unit="second" Intervals="0" />
+    <Counter Name="FrontEndRun" Value="1.896665" Unit="second" Intervals="0" />
+    <Counter Name="AstBuilder" Value="1.8155463" Unit="second" Intervals="0" />
+    <Counter Name="SyntaxVerifier" Value="0.1539015" Unit="second" Intervals="1" />
+    <Counter Name="DdlResolver" Value="1.3499201" Unit="second" Intervals="1" />
+    <Counter Name="RoslynStartup" Value="0.1042451" Unit="second" Intervals="2" />
+    <Counter Name="SMS" Value="0.0620485" Unit="second" Intervals="2" />
+    <Counter Name="ConstantFolding" Value="0.7781983" Unit="second" Intervals="2" />
+  </ScopeCounters>
+</CSSRelatedInfo>

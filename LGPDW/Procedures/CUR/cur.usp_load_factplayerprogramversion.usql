@@ -1,0 +1,77 @@
+﻿//--------------------------------------------------------------------------------------
+// Name: LG_DW_LGP.cur.factplayerprogramversion
+// Desc: Factless Fact Table
+// Auth: Juliana Lisser
+// Date: 12/18/2018
+//------------------------
+// Change History
+//------------------------
+// PR   Date             Author                     Description 
+// --   --------         -------                    ------------------------------------
+// 1    2018-12-18       Lisser                       Created
+//--------------------------------------------------------------------------------------
+//
+DROP PROCEDURE IF EXISTS LG_DM_LGP.cur.factplayerprogramversion;
+CREATE PROCEDURE LG_DM_LGP.cur.factplayerprogramversion()
+AS
+BEGIN
+    DECLARE @OUT string = "/datalake/c_cur/LG_DM_LGP/factplayerprogramversion.csv";
+
+    @QUERY_MSTR_PLAYERS =
+        SELECT id.ToLower() AS playerGuid,
+			   data_connectionData_lastOnlineLPS_connectionContext_lccVersion AS lccVersion,
+			   load_date
+        FROM LG_DW_LGP.std.mstr_players;
+
+	@QUERY_DIM_PLAYER =
+	    SELECT *
+	    FROM LG_DM_LGP.cur.dim_player;
+	
+	@QUERY_DIM_PROGRAMVERSION =
+	    SELECT *
+	    FROM LG_DM_LGP.cur.dim_programversion
+		WHERE name == "lcc";
+
+
+	@QUERY_FACT_PLAYERPROGRAMVERSION =
+		SELECT dp.player_Key AS player_Key,
+			   dpv.programversion_Key AS programVersion_Key,
+			   mp.lccVersion AS programVersion,
+		       mp.load_date
+		FROM @QUERY_MSTR_PLAYERS AS mp
+         INNER JOIN
+             @QUERY_DIM_PLAYER AS dp
+				ON mp.playerGuid == dp.playerGuid
+		 INNER JOIN @QUERY_DIM_PROGRAMVERSION AS dpv
+				ON mp.lccVersion == dpv.version
+		WHERE mp.load_date >= dp.insertedTimestamp
+			AND mp.load_date <= dp.expiredTimestamp
+			AND mp.load_date >= dpv.insertedTimestamp
+			AND mp.load_date <= dpv.expiredTimestamp;
+
+	@QUERY_WINDOWED =
+		SELECT ROW_NUMBER() OVER() AS playerProgramVersion_Key,
+           *
+		FROM @QUERY_FACT_PLAYERPROGRAMVERSION;
+
+		DROP TABLE IF EXISTS LG_DM_LGP.cur.fact_playerprogramversion;
+		CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.fact_playerprogramverion
+		(
+			INDEX clx_playerProgramVersion_Key
+			CLUSTERED(playerProgramVersion_Key ASC)
+			DISTRIBUTED BY HASH(playerProgramVersion_Key)
+		)
+
+		AS SELECT *
+		FROM @QUERY_WINDOWED;
+
+    OUTPUT @QUERY_WINDOWED
+    TO @OUT
+    USING Outputters.Csv(outputHeader : true, quoting : true);
+END;
+
+			 
+	
+	
+	
+	

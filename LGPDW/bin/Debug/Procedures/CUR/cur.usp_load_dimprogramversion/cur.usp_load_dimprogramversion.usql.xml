@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?><CompileResult scriptPath="C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\bin\Debug\Procedures\CUR\cur.usp_load_dimprogramversion\cur.usp_load_dimprogramversion.usql"><Error><Start>1192</Start><End>1193</End><Message>E_CSC_USER_INVALIDEXPRESSIONSYNTAX: Invalid expression: '
+               ROW_NUMBER() OVER(PARTITION BY
+               id.ToLower(),
+               data_channels_live,
+               source_FolderFile,
+               ORDER BY load_date DESC)'. Argument missing
+Description:
+The expression does not conform to the expression syntax.
+Resolution:
+Make sure the expression uses correct expression syntax.... at token ',', line 31
+near the ###:
+**************
+   load_date,
+               ROW_NUMBER() OVER(PARTITION BY
+               id.ToLower(),
+               data_channels_live,
+               source_FolderFile ### ,
+               ORDER BY load_date DESC) AS rn_truerecords
+        FROM LG_DW_LGP.std.mstr_programversions;
+
+    @Programversions =
+        SELECT *
+    </Message></Error><Error><Start>1267</Start><End>1276</End><Message>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DW_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.... at token 'LG_DW_LGP', line 33
+near the ###:
+**************
+  id.ToLower(),
+               data_channels_live,
+               source_FolderFile,
+               ORDER BY load_date DESC) AS rn_truerecords
+        FROM  ### LG_DW_LGP.std.mstr_programversions;
+
+    @Programversions =
+        SELECT *
+        FROM @QUERY_DISTINCT_PROGRAMVERSIONS
+        WHERE rn_truerecords == 1</Message></Error><Error><Start>4276</Start><End>4280</End><Message>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DM_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.... at token 'DROP', line 133
+near the ###:
+**************
+ateTime?) createdTimestamp,
+               insertedTimestamp,
+               expiredTimestamp,
+               isActiveRecord
+        FROM @Defaults;
+
+     ### DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_programversion;
+    CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.dim_programversion
+    (
+        INDEX clx_name
+        </Message></Error><Error><Start>4363</Start><End>4372</End><Message>E_CSC_USER_DDLENTITYDOESNOTEXIST: Database 'LG_DM_LGP' does not exist.
+Description:
+No entity of the required type has the specified name.
+Resolution:
+Either check that the name is correct or create an entity with the specified name.... at token 'LG_DM_LGP', line 134
+near the ###:
+**************
+imestamp,
+               isActiveRecord
+        FROM @Defaults;
+
+    DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_programversion;
+    CREATE TABLE IF NOT EXISTS  ### LG_DM_LGP.cur.dim_programversion
+    (
+        INDEX clx_name
+        CLUSTERED(name ASC)
+        DISTRIBUTED BY
+        HASH(name)
+    )
+	AS
+    SELECT</Message></Error></CompileResult>

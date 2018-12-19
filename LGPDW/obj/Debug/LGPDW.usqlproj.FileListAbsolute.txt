@@ -1,0 +1,2 @@
+C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\obj\Debug\LGPDW.usqlprojAssemblyReference.cache
+C:\Users\Julz\Documents\GitHub\LGPDW\LGPDW\obj\Debug\LGPDW.usqlproj.CoreCompileInputs.cache

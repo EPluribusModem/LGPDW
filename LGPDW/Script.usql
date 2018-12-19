@@ -1,1 +1,169 @@
-﻿
+﻿    REFERENCE ASSEMBLY [Newtonsoft.Json];
+    REFERENCE ASSEMBLY [Microsoft.Analytics.Samples.Formats];
+    USING Microsoft.Analytics.Samples.Formats.Json;
+
+    DECLARE @IN1_EVENTS string = "/datalake/a_raw/clientapp/nissan/nps/2018-12-11/{*}.json";
+    DECLARE @IN2_EVENTS string = "/datalake/a_raw/clientapp/nissan/nps/2018-12-12/{*}.json";
+    DECLARE @OUT_EVENTS string = "/batch/nissanevents.txt";
+
+    @EXTRACTED_EVENTS1 =
+        EXTRACT JsonDoc string
+        FROM @IN1_EVENTS
+        USING Extractors.Text(delimiter : '\n', quoting : false);
+
+    @EXTRACTED_EVENTS2 =
+        EXTRACT JsonDoc string
+        FROM @IN2_EVENTS
+        USING Extractors.Text(delimiter : '\n', quoting : false);
+
+    @EXTRACTED_EVENTS3 =
+        SELECT JsonFunctions.JsonTuple(JsonDoc, "..*") AS Object_Connections
+        FROM @EXTRACTED_EVENTS1;
+
+    @EXTRACTED_EVENTS4 =
+        SELECT JsonFunctions.JsonTuple(JsonDoc, "..*") AS Object_Connections
+        FROM @EXTRACTED_EVENTS2;
+
+    @QUERY_EXTRACTED_EVENTS1 =
+        SELECT Object_Connections["EventEnqueuedUtcTime"]?? "n/a" AS eventenqueuedutctime,
+               Object_Connections["EventProcessedUtcTime"]?? "n/a" AS eventprocessedutctime,
+               Object_Connections["PartitionId"]?? "n/a" AS partitionid,
+               Object_Connections["clientProgram"]?? "n/a" AS clientprogram,
+               Object_Connections["deviceName"]?? "n/a" AS devicename,
+               Object_Connections["eventTime"]?? "n/a" AS eventTime,
+               Object_Connections["kioskGuid"]?? "n/a" AS kioskGuid,
+               Object_Connections["localId"]?? "n/a" AS localid,
+               Object_Connections["programCode"]?? "n/a" AS programcode,
+               Object_Connections["event.dealerCode"]?? "n/a" AS event_dealercode,
+               Object_Connections["event.deviceId"]?? "n/a" AS event_deviceid,
+               Object_Connections["event.deviceType"]?? "n/a" AS event_devicetype,
+               Object_Connections["event.eventDateTimeLocal"]?? "n/a" AS event_eventdatetimelocal,
+               Object_Connections["event.eventDateTimeUTC"]?? "n/a" AS event_eventdatetimeutc,
+               Object_Connections["event.eventTypeID"]?? "n/a" AS event_eventtypeid,
+               Object_Connections["event.programCode"]?? "n/a" AS event_programCode,
+               Object_Connections["event.sessionGUID"]?? "n/a" AS event_sessionguid,
+               Object_Connections["event.version"]?? "n/a" AS event_version,
+               Object_Connections["event.eventData.accessoryId"]?? "n/a" AS event_eventdata_accessoryid,
+               //Object_Connections["event.eventData.accessoryPartNumbers"]?? "n/a" AS event_eventdata_accessorypartnumbers,
+               Object_Connections["event.eventData.accessoryRetailPrice"]?? "n/a" AS event_eventdata_accessoryretailprice,
+               Object_Connections["event.eventData.agreeToTerms"]?? "n/a" AS event_eventdata_agreetoterms,
+               //Object_Connections["event.eventData.assessmentCurrentPage"]?? "n/a" AS event_eventdata_assessmentcurrentpage,
+               Object_Connections["event.eventData.assessmentOptionId"]?? "n/a" AS event_eventdata_assessmentoptionid,
+               Object_Connections["event.eventData.cartTotal"]?? "n/a" AS event_eventdata_carttotal,
+               Object_Connections["event.eventData.colorNavItemId"]?? "n/a" AS event_eventdata_colornavitemid,
+               Object_Connections["event.eventData.comparisonCategory"]?? "n/a" AS event_eventdata_comparisoncategory,
+               Object_Connections["event.eventData.comparisonType"]?? "n/a" AS event_eventdata_comparisontype,
+               Object_Connections["event.eventData.currentColor"]?? "n/a" AS event_eventdata_currentcolor,
+               Object_Connections["event.eventData.dealerCode"]?? "n/a" AS event_eventdata_dealercode,
+               Object_Connections["event.eventData.email"]?? "n/a" AS event_eventdata_email,
+               Object_Connections["event.eventData.eventLogId"]?? "n/a" AS event_eventdata_eventlogid,
+               Object_Connections["event.eventData.exteriorColor.label"]?? "n/a" AS event_eventdata_exteriorcolor_label,
+               Object_Connections["event.eventData.featurCategoryId"]?? "n/a" AS event_eventdata_featurecategoryid,
+               Object_Connections["event.eventData.featureId"]?? "n/a" AS event_eventdata_featureid,
+               Object_Connections["event.eventData.hotspot"]?? "n/a" AS event_eventdata_hotspt,
+               Object_Connections["event.eventData.interiorColor.label"]?? "n/a" AS event_eventdata_interiorcolor_label,
+               Object_Connections["event.eventData.modelId"]?? "n/a" AS event_eventdata_modelid,
+               Object_Connections["event.eventData.name"]?? "n/a" AS event_eventdata_name,
+               Object_Connections["event.eventData.navArrowDirection"]?? "n/a" AS event_eventdata_navarrowdirection,
+               Object_Connections["event.eventData.numberAccessories"]?? "n/a" AS event_eventdata_numberaccessories,
+               Object_Connections["event.eventData.packageId"]?? "n/a" AS event_eventdata_packageid,
+               Object_Connections["event.eventData.packageRetailPrice"]?? "n/a" AS event_eventdata_packageretailprice,
+               Object_Connections["event.eventData.phone"]?? "n/a" AS event_eventdata_phone,
+               Object_Connections["event.eventData.rate"]?? "n/a" AS event_eventdata_rate,
+               Object_Connections["event.eventData.salespersonEmail"]?? "n/a" AS event_eventdata_salespersonemail,
+               Object_Connections["event.eventData.salespersonName"]?? "n/a" AS event_eventdata_salespersonname,
+               Object_Connections["event.eventData.targetColor"]?? "n/a" AS event_eventdata_targetcolor,
+               Object_Connections["event.eventData.targetModelId"]?? "n/a" AS event_eventdata_targetmodelid,
+               Object_Connections["event.eventData.term"]?? "n/a" AS event_eventdata_term,
+               Object_Connections["event.eventData.towedItemId"]?? "n/a" AS event_eventdata_toweditemid,
+               Object_Connections["event.eventData.trimId"]?? "n/a" AS event_eventdata_trimid,
+               Object_Connections["event.eventData.trimInfoChangedTo"]?? "n/a" AS event_eventdata_triminfochangedto,
+               Object_Connections["event.eventData.trimInfotoDisplayed"]?? "n/a" AS event_eventdata_triminfotodisplayed,
+               Object_Connections["event.eventData.trimSelected"]?? "n/a" AS event_eventdata_trimselected,
+               Object_Connections["event.eventData.trimSelectedToCompare"]?? "n/a" AS event_eventdata_trimselectedtocompare,
+               Object_Connections["event.eventData.userEmail"]?? "n/a" AS event_eventdata_useremail,
+               Object_Connections["event.eventData.userName"]?? "n/a" AS event_eventdata_username,
+               Object_Connections["event.eventData.vehicleType"]?? "n/a" AS event_eventdata_vehicletype,
+               Object_Connections["event.eventData.vehicleVINSelected"]?? "n/a" AS event_eventdata_vehiclevinselected,
+               Object_Connections["event.eventData.year"]?? "n/a" AS event_eventdata_year
+        FROM @EXTRACTED_EVENTS3
+    WHERE Object_Connections["deviceName"] IN ("LG-14491","LG-17132");
+
+    @QUERY_EXTRACTED_EVENTS2 =
+        SELECT Object_Connections["EventEnqueuedUtcTime"]?? "n/a" AS eventenqueuedutctime,
+               Object_Connections["EventProcessedUtcTime"]?? "n/a" AS eventprocessedutctime,
+               Object_Connections["PartitionId"]?? "n/a" AS partitionid,
+               Object_Connections["clientProgram"]?? "n/a" AS clientprogram,
+               Object_Connections["deviceName"]?? "n/a" AS devicename,
+               Object_Connections["eventTime"]?? "n/a" AS eventTime,
+               Object_Connections["kioskGuid"]?? "n/a" AS kioskGuid,
+               Object_Connections["localId"]?? "n/a" AS localid,
+               Object_Connections["programCode"]?? "n/a" AS programcode,
+               Object_Connections["event.dealerCode"]?? "n/a" AS event_dealercode,
+               Object_Connections["event.deviceId"]?? "n/a" AS event_deviceid,
+               Object_Connections["event.deviceType"]?? "n/a" AS event_devicetype,
+               Object_Connections["event.eventDateTimeLocal"]?? "n/a" AS event_eventdatetimelocal,
+               Object_Connections["event.eventDateTimeUTC"]?? "n/a" AS event_eventdatetimeutc,
+               Object_Connections["event.eventTypeID"]?? "n/a" AS event_eventtypeid,
+               Object_Connections["event.programCode"]?? "n/a" AS event_programCode,
+               Object_Connections["event.sessionGUID"]?? "n/a" AS event_sessionguid,
+               Object_Connections["event.version"]?? "n/a" AS event_version,
+               Object_Connections["event.eventData.accessoryId"]?? "n/a" AS event_eventdata_accessoryid,
+               //Object_Connections["event.eventData.accessoryPartNumbers"]?? "n/a" AS event_eventdata_accessorypartnumbers,
+               Object_Connections["event.eventData.accessoryRetailPrice"]?? "n/a" AS event_eventdata_accessoryretailprice,
+               Object_Connections["event.eventData.agreeToTerms"]?? "n/a" AS event_eventdata_agreetoterms,
+               //Object_Connections["event.eventData.assessmentCurrentPage"]?? "n/a" AS event_eventdata_assessmentcurrentpage,
+               Object_Connections["event.eventData.assessmentOptionId"]?? "n/a" AS event_eventdata_assessmentoptionid,
+               Object_Connections["event.eventData.cartTotal"]?? "n/a" AS event_eventdata_carttotal,
+               Object_Connections["event.eventData.colorNavItemId"]?? "n/a" AS event_eventdata_colornavitemid,
+               Object_Connections["event.eventData.comparisonCategory"]?? "n/a" AS event_eventdata_comparisoncategory,
+               Object_Connections["event.eventData.comparisonType"]?? "n/a" AS event_eventdata_comparisontype,
+               Object_Connections["event.eventData.currentColor"]?? "n/a" AS event_eventdata_currentcolor,
+               Object_Connections["event.eventData.dealerCode"]?? "n/a" AS event_eventdata_dealercode,
+               Object_Connections["event.eventData.email"]?? "n/a" AS event_eventdata_email,
+               Object_Connections["event.eventData.eventLogId"]?? "n/a" AS event_eventdata_eventlogid,
+               Object_Connections["event.eventData.exteriorColor.label"]?? "n/a" AS event_eventdata_exteriorcolor_label,
+               Object_Connections["event.eventData.featurCategoryId"]?? "n/a" AS event_eventdata_featurecategoryid,
+               Object_Connections["event.eventData.featureId"]?? "n/a" AS event_eventdata_featureid,
+               Object_Connections["event.eventData.hotspot"]?? "n/a" AS event_eventdata_hotspt,
+               Object_Connections["event.eventData.interiorColor.label"]?? "n/a" AS event_eventdata_interiorcolor_label,
+               Object_Connections["event.eventData.modelId"]?? "n/a" AS event_eventdata_modelid,
+               Object_Connections["event.eventData.name"]?? "n/a" AS event_eventdata_name,
+               Object_Connections["event.eventData.navArrowDirection"]?? "n/a" AS event_eventdata_navarrowdirection,
+               Object_Connections["event.eventData.numberAccessories"]?? "n/a" AS event_eventdata_numberaccessories,
+               Object_Connections["event.eventData.packageId"]?? "n/a" AS event_eventdata_packageid,
+               Object_Connections["event.eventData.packageRetailPrice"]?? "n/a" AS event_eventdata_packageretailprice,
+               Object_Connections["event.eventData.phone"]?? "n/a" AS event_eventdata_phone,
+               Object_Connections["event.eventData.rate"]?? "n/a" AS event_eventdata_rate,
+               Object_Connections["event.eventData.salespersonEmail"]?? "n/a" AS event_eventdata_salespersonemail,
+               Object_Connections["event.eventData.salespersonName"]?? "n/a" AS event_eventdata_salespersonname,
+               Object_Connections["event.eventData.targetColor"]?? "n/a" AS event_eventdata_targetcolor,
+               Object_Connections["event.eventData.targetModelId"]?? "n/a" AS event_eventdata_targetmodelid,
+               Object_Connections["event.eventData.term"]?? "n/a" AS event_eventdata_term,
+               Object_Connections["event.eventData.towedItemId"]?? "n/a" AS event_eventdata_toweditemid,
+               Object_Connections["event.eventData.trimId"]?? "n/a" AS event_eventdata_trimid,
+               Object_Connections["event.eventData.trimInfoChangedTo"]?? "n/a" AS event_eventdata_triminfochangedto,
+               Object_Connections["event.eventData.trimInfotoDisplayed"]?? "n/a" AS event_eventdata_triminfotodisplayed,
+               Object_Connections["event.eventData.trimSelected"]?? "n/a" AS event_eventdata_trimselected,
+               Object_Connections["event.eventData.trimSelectedToCompare"]?? "n/a" AS event_eventdata_trimselectedtocompare,
+               Object_Connections["event.eventData.userEmail"]?? "n/a" AS event_eventdata_useremail,
+               Object_Connections["event.eventData.userName"]?? "n/a" AS event_eventdata_username,
+               Object_Connections["event.eventData.vehicleType"]?? "n/a" AS event_eventdata_vehicletype,
+               Object_Connections["event.eventData.vehicleVINSelected"]?? "n/a" AS event_eventdata_vehiclevinselected,
+               Object_Connections["event.eventData.year"]?? "n/a" AS event_eventdata_year
+        FROM @EXTRACTED_EVENTS4
+    WHERE Object_Connections["deviceName"] IN ("LG-14491","LG-17132");
+
+    @AGG = 
+    SELECT *
+    FROM @QUERY_EXTRACTED_EVENTS1
+    UNION ALL 
+    SELECT *
+    FROM @QUERY_EXTRACTED_EVENTS2;
+
+    
+
+    OUTPUT @AGG
+    TO @OUT_EVENTS
+    USING Outputters.Text(outputHeader : true, quoting : true);
+

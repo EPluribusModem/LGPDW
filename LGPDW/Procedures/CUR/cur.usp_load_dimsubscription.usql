@@ -1,0 +1,138 @@
+﻿
+DROP PROCEDURE IF EXISTS cur.usp_load_dimsubscription;
+CREATE PROCEDURE cur.usp_load_dimsubscription()
+AS
+BEGIN
+    DECLARE @OUT string = "/datalake/c_cur/LG_DM_LGP/dim_subscription.csv";
+    @QUERY_DISTINCT_SUBSCRIPTIONS =
+        SELECT id.ToLower() AS data_id,
+               data_subscriptionLevel,
+               data_active,
+               source_FolderFile,
+               load_date,
+               ROW_NUMBER() OVER(PARTITION BY
+               id.ToLower(),
+               data_subscriptionLevel,
+               data_active,
+               source_FolderFile
+               ORDER BY load_date DESC) AS rn_truerecords
+        FROM LG_DW_LGP.std.mstr_subscriptions;
+
+    @Subscriptions =
+        SELECT *
+        FROM @QUERY_DISTINCT_SUBSCRIPTIONS
+        WHERE rn_truerecords == 1;
+
+    @Subscriptions2 =
+        SELECT *,
+               ROW_NUMBER() OVER(PARTITION BY data_id ORDER BY load_date DESC) AS rn_changes
+        FROM @Subscriptions;
+
+    @SubscriptionsMaxDate =
+        SELECT data_id,
+               MAX(load_date) AS maxloaddate
+        FROM @Subscriptions2
+        GROUP BY data_id;
+
+    @SubscriptionsMinDate =
+        SELECT data_id,
+               MIN(load_date) AS minloaddate
+        FROM @Subscriptions2
+        GROUP BY data_id;
+
+    @Defaults =
+        SELECT *
+        FROM(
+            VALUES
+            (
+                - 1,
+                "n/a",
+                "n/a",
+                1,
+                0,
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2999-12-31"),
+                1
+            ),
+            (
+                - 2,
+                "unknown",
+                "unknown",
+                1,
+                0,
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2999-12-31"),
+                1
+            ),
+            (
+                - 3,
+                "invalid",
+                "invalid",
+                1,
+                0,
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2000-01-01"),
+                DateTime.Parse("2999-12-31"),
+                1
+            )
+			) AS T(subscription_Key,
+				   subscriptionGuid,
+				   subscriptionLevel,
+				   isActive,
+				   isReportable,
+				   createdTimestamp,
+				   insertedTimestamp,
+				   expiredTimestamp,
+				   isActiveRecord);
+
+    @Subscriptions3 =
+        SELECT ROW_NUMBER() OVER() AS subscription_Key,
+               s2.data_id AS subscriptionGuid,
+               s2.data_subscriptionLevel AS subscriptionLevel,
+               (s2.data_active == "True") ? 1 : 0 AS isActive,
+               (s2.data_active == "True") ? 1 : 0 AS isReportable,
+               smd.minloaddate AS createdTimestamp,
+               s2.load_date AS insertedTimestamp,
+               (s2.rn_changes == 1) ? DateTime.Parse("2999-12-31") : s2.load_date AS expiredTimestamp,
+               (sxd.maxloaddate == s2.load_date) ? 1 : 0 AS isActiveRecord
+        FROM @Subscriptions2 AS s2
+             INNER JOIN
+                 @SubscriptionsMinDate AS smd
+             ON s2.data_id == smd.data_id
+             INNER JOIN
+                 @SubscriptionsMaxDate AS sxd
+             ON s2.data_id == sxd.data_id
+        UNION ALL
+        SELECT (long?) subscription_Key AS subscription_Key,
+               subscriptionGuid,
+               subscriptionLevel,
+               isActive,
+               isReportable,
+               (DateTime?) createdTimestamp AS createdTimestamp,
+               insertedTimestamp,
+               expiredTimestamp,
+               isActiveRecord
+        FROM @Defaults;
+
+    DROP TABLE IF EXISTS LG_DM_LGP.cur.dim_subscription;
+    CREATE TABLE IF NOT EXISTS LG_DM_LGP.cur.dim_subscription
+    (
+        INDEX clx_subscriptionGuid
+        CLUSTERED(subscriptionGuid ASC)
+        DISTRIBUTED BY
+        HASH(subscriptionGuid)
+    )
+	AS
+    SELECT *
+    FROM @Subscriptions3;
+
+    OUTPUT @Subscriptions3
+    TO @OUT
+    USING Outputters.Csv(outputHeader : true, quoting : true);
+	END;
+
+			   
+			
+			   
